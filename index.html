@@ -236,10 +236,10 @@ tr.go td{border-top:1px solid var(--line)}
     var key=getKey();
     var d=day(cur);
     var lines=(d.tasks||[]).map(function(t){return "- ["+t.status+"] "+t.text+(t.note?" ("+t.note+")":"")}).join("\n")||"(задач не было)";
-    var prompt="Ты помогаешь человеку подвести итог дня по его ежедневнику. Пиши по-русски, просто и по делу, без markdown и списков со звёздочками.\n"+
+    var prompt="Ты помогаешь человеку подвести итог дня по его ежедневнику. Пиши по-русски, просто и по делу, без markdown и списков со звёздочками. Запись сделана голосом и распознана автоматически, поэтому в ней бывают ошибки и странные слова: понимай смысл по контексту и не повторяй явные ошибки распознавания.\n"+
       "Статусы: done — сделано, partial — частично, todo — не сделано, moved — перенесено.\n\nЗадачи дня:\n"+lines+
       "\n\nГолосовая запись о том, как прошёл день (может быть сбивчивой):\n"+(d.reflection||"(записи нет)")+
-      "\n\nСделай короткий итог в 3–5 строках: что получилось, что помешало или осталось незавершённым, и одно конкретное, что стоит изменить завтра. Не выдумывай того, чего нет в данных.";
+      "\n\nСделай короткий итог: строго 3–5 коротких строк, не больше 70 слов. Обязательно упомяни ВСЕ дела из записи, в том числе личные (например, поход к парикмахеру), ничего не пропускай. Затем скажи, что помешало или осталось незавершённым, и одно конкретное, что стоит изменить завтра. Не выдумывай того, чего нет в данных.";
     if(!key){
       sumPaste=true;render();
       try{navigator.clipboard.writeText(prompt).then(function(){note("Запрос скопирован. Отправь его Claude в чате, а ответ вставь ниже.")},function(){note("Не удалось скопировать запрос.")})}catch(e){note("Не удалось скопировать запрос.")}
@@ -247,7 +247,7 @@ tr.go td{border-top:1px solid var(--line)}
     }
     summing=true;var day0=cur;render();
     fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"content-type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
-      body:JSON.stringify({model:"claude-haiku-5-5",max_tokens:500,messages:[{role:"user",content:prompt}]})})
+      body:JSON.stringify({model:"claude-haiku-5-5",max_tokens:1500,messages:[{role:"user",content:prompt}]})})
     .then(function(r){return r.json()})
     .then(function(j){
       summing=false;
