@@ -247,13 +247,14 @@ tr.go td{border-top:1px solid var(--line)}
     }
     summing=true;var day0=cur;render();
     fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"content-type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
-      body:JSON.stringify({model:"claude-haiku-5-5",max_tokens:1500,messages:[{role:"user",content:prompt}]})})
+      body:JSON.stringify({model:"claude-haiku-5-5",max_tokens:2000,thinking:{type:"disabled"},messages:[{role:"user",content:prompt}]})})
     .then(function(r){return r.json()})
     .then(function(j){
       summing=false;
       if(j.error)throw new Error(j.error.message||"ошибка API");
-      var t=((j.content||[]).map(function(c){return c.text||""}).join("")).trim();
+      var t=((j.content||[]).filter(function(c){return c.type==="text"}).map(function(c){return c.text||""}).join("")).trim();
       if(t)mut(day0,function(x){x.summary=t});else render();
+      if(j.stop_reason==="max_tokens")note("Ответ получился обрезанным (stop_reason: max_tokens). Нажми «Обновить итог» ещё раз.");
     }).catch(function(e){summing=false;render();note("Не удалось подвести итог: "+(e&&e.message||e))});
   }
 
