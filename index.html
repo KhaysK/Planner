@@ -171,7 +171,7 @@ tr.go td{border-top:1px solid var(--line)}
     if(sumPaste)h+='<textarea id="sumin" placeholder="Вставь сюда итог от Claude" style="margin-top:10px"></textarea><div class="vrow"><button class="pill main" data-a="sumsave">Сохранить итог</button><button class="pill" data-a="sumcancel">Отмена</button></div>';
     h+='<div class="vrow">';
     h+='<button class="pill main" data-a="sum"'+(summing?' disabled':'')+'>'+(summing?'Подвожу итог…':(d.summary?'Обновить итог':'Подвести итог'))+'</button>';
-    if(d.summary&&d.reflection)h+='<button class="pill" data-a="raw">'+(showRaw?'Скрыть запись':'Показать запись')+'</button>';
+    if(d.summary)h+='<button class="pill" data-a="raw">'+(showRaw?'Скрыть запись':(d.reflection?'Показать запись':'Дополнить запись'))+'</button>';
     h+='</div></div>';
 
     h+='<h2>Отчёт за день</h2><div class="card rep">'+esc(report(cur))+'</div>';
